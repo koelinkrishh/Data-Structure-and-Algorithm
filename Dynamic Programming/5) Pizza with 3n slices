@@ -1,0 +1,84 @@
+''' A pizza is spli b/w 3 friend. Given an array of integers which represent size of
+different pieces. Find the maximum possible sum of slice you can pick.
+
+-> You can pick any pizza slice.
+-> friend A will pick next slice anti-clockwise and friend B will pick next slice clockwise
+-> Repeat until there are no more slices of pizzas
+'''
+def solver(slices,index,ending,count):
+   if(count==0 or index > ending):
+      return 0
+   
+   # you can either eat given index slice or leave it to move onto next slice
+   take = slices[index] + solver(slices,index+2,ending,count-1) # cant take next slice so index increase by 2
+   nottake = solver(slices,index+1,ending,count)
+   
+   return max(take,nottake)
+
+def maxsize(slices):
+   sz = len(slices)   
+   includefirst = solver(slices, 0, sz-2, sz/3)
+   excludefirst = solver(slices, 1, sz-1, sz/3)
+   
+   return max(includefirst,excludefirst)
+
+#  With memoization
+def solveMem(slices,index,ending,count,dp):
+   if(count==0 or index > ending):
+      return 0
+   
+   if(dp[index][count] != -1):
+      return dp[index][count]
+   
+   # you can either eat given index slice or leave it to move onto next slice
+   take = slices[index] + solveMem(slices,index+2,ending,count-1,dp)
+   nottake = solveMem(slices,index+1,ending,count,dp)
+   
+   dp[index][count] = max(take,nottake)
+   return dp[index][count]
+
+def Maxsize(slices):
+   sz = int(len(slices))
+   
+   dp1 = [[-1]*(int(sz/3)+1) for _ in range(sz)]
+   dp2 = [[-1]*(int(sz/3)+1) for _ in range(sz)]
+   
+   includefirst = solveMem(slices, 0, sz-2, int(sz/3),dp1)
+   excludefirst = solveMem(slices, 1, sz-1, int(sz/3),dp2)
+   
+   return max(includefirst,excludefirst)
+
+# Tabulation
+def Mostslices(slices):
+   sz = len(slices)
+   part = int(sz/3)
+   
+   dp1 = [[0]*(part+1) for _ in range(sz+2)]
+   
+   for i in range(sz-2,-1,-1):
+      for j in range(1,1+part):
+         take = slices[i] + dp1[i+2][j-1]
+         nottake = dp1[i+1][j]
+         
+         dp1[i][j] = max(take,nottake)
+   
+   dp2 = [[0]*(part+1) for _ in range(sz+2)]
+   
+   for i in range(sz-1,0,-1):
+      for j in range(1,1+part):
+         take = slices[i] + dp2[i+2][j-1]
+         nottake = dp2[i+1][j]
+         
+         dp2[i][j] = max(take,nottake)
+         
+   return max(dp1[0][part],dp2[1][part])
+
+
+if __name__ ==  "__main__":
+   cuts = [1,2,3,4,5,6]
+   
+   print(Maxsize(cuts))
+   print(maxsize(cuts))
+   print(Mostslices(cuts))
+   
+

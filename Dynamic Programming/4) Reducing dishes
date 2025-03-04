@@ -1,0 +1,42 @@
+class Solution():
+   def solver(self,sat,index,time,dp):
+      if(index==len(sat)):
+         return 0
+
+      if(dp[index][time] != -1):
+         return dp[index][time]
+
+      include = time*sat[index] + self.solver(sat,index+1,time+1,dp)
+      exclude = self.solver(sat,index+1,time,dp)
+
+      dp[index][time] = max(include,exclude)
+      return dp[index][time]
+
+   def MaxSatisfaction(self,sat):
+      sat.sort()
+      n = len(sat)
+      dp = [[-1]*(n+1) for _ in range(n+1)]
+      return self.solver(sat,0,1,dp)
+
+""" OR alternate logic: 
+sort in reverse order, cumulative sum starting from highest satisfaction dishes first
+so that result = highest sat dishes get multiplied with maximum time as we add cumulative sum so highest sat
+dishes gets added again and again on each new dish
+"""
+def MaximumSatisfaction(satisfaction):
+   sat = sorted(satisfaction,reverse=True)
+   result,cumulative_sum = 0,0
+   
+   for maxsatDish in sat:
+      if(cumulative_sum + maxsatDish > 0):
+         cumulative_sum = cumulative_sum + maxsatDish
+         result += cumulative_sum
+   
+   return result
+
+
+# Driver code:
+satisfaction = [-1,-8,0,5,-9]
+satisfaction2 = [4,3,2]
+print(Solution().MaxSatisfaction(satisfaction))
+print(MaximumSatisfaction(satisfaction2))

@@ -1,0 +1,32 @@
+"""   
+Given a rod of length n inches and an array of prices that includes prices of all pieces 
+of size smaller than n. Determine the maximum value obtainable by cutting up the rod and selling the pieces. 
+We are mainly given a price array such that the size of the price array is same as rod length and price[i] represents price of length i+1
+"""
+
+"""   Return the best obtainable price for a rod of length n  """
+def rodprice(prices,index,length):
+   # base case
+# on reaching base without any worthy cut, sell rod in unit length
+   if(index==0):
+      return length*prices[0]
+#  for length==0 -> no more left to sell
+   if(length==0):
+      return 0
+
+   # just move rod point along if cutting rod is not worth
+   notcutting = rodprice(prices,index-1,length)
+   cut = float("-inf") # initial value
+   cut_length = index+1
+
+   if(cut_length<=length and cut_length>=0):
+      cut = prices[index] + rodprice(prices,index,length - cut_length)
+
+   return max(cut,notcutting)
+
+# Driver program
+arr = [1,5,8,9,10,17,17,20]
+size = len(arr)
+
+print("Maximum price of rod: ",rodprice(arr,size-1,size))
+

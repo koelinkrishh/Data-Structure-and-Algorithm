@@ -1,0 +1,24 @@
+# Traverse a m*n 2D grid by moving either down or right
+# track position as key = a,b with some sperator b/w a and b
+def grid(m,n,temp = {}):
+   # swap m,n to get symmtry as grid(a,b) == grid(b,a)
+   if(m>n): m,n = n,m 
+   
+   key = f"{m},{n}"
+
+   if(key in temp):
+      return temp[key]
+   if(m==0 or n==0):
+      return 0
+   if(m==1 and n==1):
+      return 1
+
+   temp[key] = grid(m,n-1,temp) + grid(m-1,n,temp)
+   return temp[key]
+
+print(grid(0,1))
+print(grid(4,1))
+print(grid(4,4))
+print(grid(9,2))
+print(grid(18,18))
+print(grid(15,7))
